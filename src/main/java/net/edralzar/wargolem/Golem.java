@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import net.edralzar.wargolem.brains.BasicBrain;
 import net.edralzar.wargolem.model.MapResource;
 import net.edralzar.wargolem.model.Player;
 import net.edralzar.wargolem.model.Role;
@@ -20,16 +21,31 @@ public class Golem {
     };
 
     private WarRoom room;
+    private Brain brain;
 
     public Golem(WarRoom room) {
-        if (room == null)
-            throw new NullPointerException();
-        this.room = room;
+        this(new BasicBrain(), room);
+    }
+
+    public Golem(Brain brain, WarRoom newRoom) {
+        if (newRoom == null)
+            throw new NullPointerException("WarRoom cannot be null");
+        if (brain == null)
+            this.brain = new BasicBrain();
+        else
+            this.brain = brain;
+        this.room = newRoom;
+    }
+
+    public Golem(Brain brain, String roomId, Player owner) {
+        this.brain = brain == null ? new BasicBrain() : brain;
+        this.room = brain.load(roomId, owner);
     }
 
     public void addPlayer(Player p) {
         room.getSquad().add(p);
         p.setRole(Role.SOLDIER);
+        brain.save(room);
     }
 
     public void setScout(Player p, MapResource mr) {
@@ -37,6 +53,7 @@ public class Golem {
         p.setRole(Role.SCOUT);
         if (oldScout != null)
             oldScout.setRole(Role.SOLDIER);
+        brain.save(room);
     }
 
     public void replaceScout(Player oldScout, Player newScout) {
@@ -51,6 +68,7 @@ public class Golem {
         Player oldScout = room.getScouts().remove(tower);
         if (oldScout != null)
             oldScout.setRole(Role.SOLDIER);
+        brain.save(room);
     }
 
     public List<Player> listScoutsByAge() {
