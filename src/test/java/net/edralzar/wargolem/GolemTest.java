@@ -40,9 +40,9 @@ public class GolemTest {
         assertThat(p.getRole()).isEqualTo(Role.SOLDIER);
         assertThat(p.getRoleSince()).isEqualTo(Instant.EPOCH);
 
-        assertThat(golem.getWarRoom().getSquad().size()).isEqualTo(3);
+        assertThat(golem.getWarRoom().getSquad()).hasSize(3);
         golem.addPlayer(p);
-        assertThat(golem.getWarRoom().getSquad().size()).isEqualTo(4);
+        assertThat(golem.getWarRoom().getSquad()).hasSize(4);
         assertThat(golem.getWarRoom().getSquad()).contains(p);
     }
 
@@ -66,6 +66,17 @@ public class GolemTest {
         assertThat(golem.getWarRoom().getScouts().get(tower)).isEqualTo(scout2);
         assertThat(scout1.getRole()).isEqualTo(Role.SOLDIER);
         assertThat(golem.getWarRoom().getScouts().inverse().get(scout1)).isNull();
+    }
+
+    @Test
+    public void testSetScoutNoDual() {
+        MapResource tower1 = new MapResource("greenLakeTower", "Green Lake Tower");
+        MapResource tower2 = new MapResource("redLakeTower", "Red Lake Tower");
+        golem.setScout(scout1, tower1);
+        golem.setScout(scout1, tower2);
+
+        assertThat(golem.getWarRoom().getScouts().get(tower1)).isNull();
+        assertThat(golem.getWarRoom().getScouts().get(tower2)).isEqualTo(scout1);
     }
 
     @Test
