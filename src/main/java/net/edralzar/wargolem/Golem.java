@@ -21,7 +21,13 @@ public class Golem {
     }
 
     public void setScout(Player p, MapResource mr) {
-        room.getScouts().forcePut(mr, p);
+        Player oldScout = room.getScouts().forcePut(mr, p);
         p.setRole(Role.SCOUT);
+        if (oldScout != null)
+            oldScout.setRole(Role.SOLDIER);
+    }
+
+    public WarRoom getWarRoom() {
+        return room;
     }
 }
