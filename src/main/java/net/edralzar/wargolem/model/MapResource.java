@@ -1,12 +1,31 @@
 package net.edralzar.wargolem.model;
 
-import java.util.List;
-
 public class MapResource {
 
     private String resourceId;
     private String name;
     private String state;
+
+    public MapResource(String resourceId, String name) {
+        this.resourceId = resourceId;
+        this.name = name;
+    }
+
+    public String getResourceId() {
+        return resourceId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -15,9 +34,8 @@ public class MapResource {
 
         MapResource that = (MapResource) o;
 
-        if (!resourceId.equals(that.resourceId)) return false;
+        return resourceId.equals(that.resourceId);
 
-        return true;
     }
 
     @Override
