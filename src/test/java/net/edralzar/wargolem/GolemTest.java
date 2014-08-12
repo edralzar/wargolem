@@ -55,7 +55,7 @@ public class GolemTest {
         golem.setScout(scout1, tower);
         assertThat(golem.getWarRoom().getScouts().get(tower)).isEqualTo(scout1);
         assertThat(scout1.getRole()).isEqualTo(Role.SCOUT);
-        assertThat(scout1.getRoleSince().isAfter(beforeScout)).isTrue();
+        assertThat(scout1.getRoleSince().compareTo(beforeScout)).isPositive();
     }
 
     @Test
