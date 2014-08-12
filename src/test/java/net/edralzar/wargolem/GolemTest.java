@@ -96,6 +96,17 @@ public class GolemTest {
         golem.removeScout(tower);
         assertThat(newScout.getRole()).isEqualTo(Role.SOLDIER);
         assertThat(golem.getWarRoom().getScouts().get(tower)).isNull();
+    }
 
+    @Test
+    public void testListScoutsByAge() throws InterruptedException {
+        MapResource tower1 = new MapResource("greenLakeTower", "Green Lake Tower");
+        MapResource tower2 = new MapResource("redLakeTower", "Red Lake Tower");
+        golem.setScout(scout2, tower2);
+        Thread.sleep(800L);
+        golem.setScout(scout1, tower1);
+
+        //order is taken into account
+        assertThat(golem.listScoutsByAge()).containsExactly(scout2, scout1);
     }
 }

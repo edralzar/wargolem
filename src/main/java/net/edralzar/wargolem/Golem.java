@@ -1,6 +1,9 @@
 package net.edralzar.wargolem;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 import net.edralzar.wargolem.model.MapResource;
 import net.edralzar.wargolem.model.Player;
@@ -48,6 +51,12 @@ public class Golem {
         Player oldScout = room.getScouts().remove(tower);
         if (oldScout != null)
             oldScout.setRole(Role.SOLDIER);
+    }
+
+    public List<Player> listScoutsByAge() {
+        List<Player> scouts = new ArrayList<Player>(room.getScouts().values());
+        Collections.sort(scouts, ROLE_SINCE_COMPARATOR);
+        return scouts;
     }
 
     public WarRoom getWarRoom() {
