@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.time.Instant;
 
 import org.junit.Before;
+import org.junit.Test;
 
 import net.edralzar.wargolem.model.Gw2Class;
 import net.edralzar.wargolem.model.MapResource;
@@ -33,7 +34,7 @@ public class GolemTest {
         golem.addPlayer(scout2);
     }
 
-    @org.junit.Test
+    @Test
     public void testAddPlayer() throws Exception {
         Player p = new Player("toto", Gw2Class.THIEF);
         assertThat(p.getRole()).isEqualTo(Role.SOLDIER);
@@ -45,7 +46,7 @@ public class GolemTest {
         assertThat(golem.getWarRoom().getSquad()).contains(p);
     }
 
-    @org.junit.Test
+    @Test
     public void testSetScout() throws Exception {
         MapResource tower = new MapResource("blueLakeTower", "Blue Lake Tower");
         Instant beforeScout = scout1.getRoleSince();
@@ -57,13 +58,33 @@ public class GolemTest {
         assertThat(scout1.getRoleSince().isAfter(beforeScout)).isTrue();
     }
 
-    @org.junit.Test
-    public void testScoutReplaces() throws Exception {
+    @Test
+    public void testSetScoutReplaces() throws Exception {
         MapResource tower = new MapResource("redLakeTower", "Red Lake Tower");
         golem.setScout(scout1, tower);
         golem.setScout(scout2, tower);
         assertThat(golem.getWarRoom().getScouts().get(tower)).isEqualTo(scout2);
         assertThat(scout1.getRole()).isEqualTo(Role.SOLDIER);
         assertThat(golem.getWarRoom().getScouts().inverse().get(scout1)).isNull();
+    }
+
+    @Test
+    public void testReplaceRemoveScout() {
+        MapResource tower = new MapResource("greenLakeTower", "Green Lake Tower");
+        Player newScout = new Player("NewScout", Gw2Class.ELEMENTALIST);
+        golem.addPlayer(newScout);
+
+        golem.replaceScout(soldier1, newScout);
+        assertThat(newScout.getRole()).isEqualTo(Role.SOLDIER); //soldier was not a scout
+
+        golem.setScout(scout1, tower);
+        golem.replaceScout(scout1, newScout);
+        assertThat(newScout.getRole()).isEqualTo(Role.SCOUT);
+        assertThat(scout1.getRole()).isEqualTo(Role.SOLDIER);
+
+        golem.removeScout(tower);
+        assertThat(newScout.getRole()).isEqualTo(Role.SOLDIER);
+        assertThat(golem.getWarRoom().getScouts().get(tower)).isNull();
+
     }
 }

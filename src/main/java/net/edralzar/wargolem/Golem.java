@@ -1,11 +1,20 @@
 package net.edralzar.wargolem;
 
+import java.util.Comparator;
+
 import net.edralzar.wargolem.model.MapResource;
 import net.edralzar.wargolem.model.Player;
 import net.edralzar.wargolem.model.Role;
 import net.edralzar.wargolem.model.WarRoom;
 
 public class Golem {
+
+    private static final Comparator<Player> ROLE_SINCE_COMPARATOR = new Comparator<Player>() {
+        @Override
+        public int compare(Player o1, Player o2) {
+            return o1.getRoleSince().compareTo(o2.getRoleSince());
+        }
+    };
 
     private WarRoom room;
 
@@ -23,6 +32,20 @@ public class Golem {
     public void setScout(Player p, MapResource mr) {
         Player oldScout = room.getScouts().forcePut(mr, p);
         p.setRole(Role.SCOUT);
+        if (oldScout != null)
+            oldScout.setRole(Role.SOLDIER);
+    }
+
+    public void replaceScout(Player oldScout, Player newScout) {
+        MapResource scoutPoint = room.getScouts().inverse().get(oldScout);
+        if (scoutPoint == null)
+            return;
+
+        setScout(newScout, scoutPoint);
+    }
+
+    public void removeScout(MapResource tower) {
+        Player oldScout = room.getScouts().remove(tower);
         if (oldScout != null)
             oldScout.setRole(Role.SOLDIER);
     }
